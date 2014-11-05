@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html>
+
+  <head>
+    <meta charset='utf-8'>
+    <meta http-equiv="X-UA-Compatible" content="chrome=1">
+    <meta name="description" content="Android ORM : Android ORM (Aorm) in an ORM implementation on Android platform, include ORM core, relative Eclipse plugin(ADT extensions) and example Android application.">
+
+    <link rel="stylesheet" type="text/css" media="screen" href="stylesheets/stylesheet.css">
+
+    <title>Android ORM</title>
+  </head>
+
+  <body>
+
+    <!-- HEADER -->
+    <div id="header_wrap" class="outer">
+        <header class="inner">
+          <a id="forkme_banner" href="https://github.com/Android-ORM">View on GitHub</a>
+
+          <h1 id="project_title">Android ORM</h1>
+          <h2 id="project_tagline">Android ORM (Aorm) in an ORM implementation on Android platform, include ORM core, relative Eclipse plugin(ADT extensions) and example Android application.</h2>
+
+        </header>
+    </div>
+
+    <!-- MAIN CONTENT -->
+    <div id="main_content_wrap" class="outer">
+      <section id="main_content" class="inner">
+        <h1>
+<a id="introduction" class="anchor" href="#introduction" aria-hidden="true"><span class="octicon octicon-link"></span></a>Introduction</h1>
+
+<p>Did you used sqlite to save your data on Android? If you did, you may be puzzled for the complexity of mechanism. Now the Andoird ORM (Aorm) coming which armed to make it simple for the developers. If you have the interesting, please join us.</p>
+
+<h1>
+<a id="features" class="anchor" href="#features" aria-hidden="true"><span class="octicon octicon-link"></span></a>Features</h1>
+
+<ul>
+<li>Brief ORM mapping, just write an annotation for the field of Java beans. e.g. <a href="https://github.com/Column" class="user-mention">@Column</a>(name="_name") to mapping _name columnn of database to name property.</li>
+<li>Powerful Forward Engineering supporting, generating DDL and ContentProvider automaticlly.</li>
+<li>Useful Assist feature, create your Activity/Service/BroadcastReceiver with a wizard and configurat them in AndroidManifest.xml automatically.</li>
+<li>...
+More feature, please experience it for your self.</li>
+</ul>
+
+<h1>
+<a id="projects" class="anchor" href="#projects" aria-hidden="true"><span class="octicon octicon-link"></span></a>Projects</h1>
+
+<h2>
+<a id="cnieclipseaormcore" class="anchor" href="#cnieclipseaormcore" aria-hidden="true"><span class="octicon octicon-link"></span></a>cn.ieclipse.aorm.core</h2>
+
+<p>The core project of Android ORM, providing ORM annotation parsing, orm core feature.</p>
+
+<h2>
+<a id="cnieclipseaormeclipse" class="anchor" href="#cnieclipseaormeclipse" aria-hidden="true"><span class="octicon octicon-link"></span></a>cn.ieclipse.aorm.eclipse</h2>
+
+<p>The eclipse plug-in project, provider code generating, DDL generating assist feature. you can found it at <a href="https://github.com/Jamling/Aorm-Eclipse-Plugin">https://github.com/Jamling/Aorm-Eclipse-Plugin</a></p>
+
+<h2>
+<a id="cnieclipseaormexample" class="anchor" href="#cnieclipseaormexample" aria-hidden="true"><span class="octicon octicon-link"></span></a>cn.ieclipse.aorm.example</h2>
+
+<p>The example Android project using Android ORM.</p>
+
+<h1>
+<a id="code-samples" class="anchor" href="#code-samples" aria-hidden="true"><span class="octicon octicon-link"></span></a>Code samples</h1>
+
+<h2>
+<a id="query" class="anchor" href="#query" aria-hidden="true"><span class="octicon octicon-link"></span></a>Query</h2>
+
+<pre><code>    Session session = ExampleContentProvider.getSession();
+    // simplest query, query all student table.
+    Criteria criteria = Criteria.create(Student.class);
+    // add restrication: id equals
+    criteria.add(Restrictions.eq("id", 1));
+    // add restriction: name like Jamling
+    criteria.add(Restrictions.like("name", "Jaming"));
+    // add restriction: age &gt; 30
+    criteria.add(Restrictions.lt("age", 30));
+    // add order
+    criteria.addOrder(Order.asc("age"));
+    // set district
+    criteria.setDistinct(true);
+    // set limit from row 10 to 20
+    criteria.setLimit(10, 10);
+
+    List&lt;Student&gt; list = session.list(Student.class);
+    // if you use Android CursorAdapter you can:
+    Cursor c = session.query(criteria);
+
+    // set alias, so the project will be alias.columnn. e.g. s.name
+    // criteria.setAlias("s");
+    // multi-table query
+    criteria.addChild(StudentMore.class, "m", Criteria.INNER_JOIN,
+            Restrictions.geProperty("s.id", "m.id"));
+    // query to cursor
+    c = session.query(criteria);
+    // convert to list.
+    List&lt;Object[]&gt; ret = CursorUtils.getFromCursor(c,
+            new Class[] { Student.class }, new String[] { "s", "m" });
+    // query to list.
+    ret = session.listAll(criteria);
+    Object[] item = ret.get(0);
+    Student s = (Student) item[0];
+    StudentMore m = (StudentMore) item[1];
+    //
+</code></pre>
+
+<h2>
+<a id="other" class="anchor" href="#other" aria-hidden="true"><span class="octicon octicon-link"></span></a>Other</h2>
+
+<pre><code>    Session session = ExampleContentProvider.getSession();
+    // insert
+    Student s = new Student();
+    s.setName("Jamling");
+    long rowId = session.insert(s, null);
+    // update student's name to Jame whose id is 1
+    s.setId(1);
+    s.setName("Jame");
+    int rows = session.update(s);
+    // delete student whose id is 2
+    session.deleteById(Student.class, 2);
+    // query student whose id is 4
+    s = session.get(Student.class, 4);
+</code></pre>
+
+<h2>
+<a id="author" class="anchor" href="#author" aria-hidden="true"><span class="octicon octicon-link"></span></a>Author</h2>
+
+<p>Jamling </p>
+      </section>
+    </div>
+
+    <!-- FOOTER  -->
+    <div id="footer_wrap" class="outer">
+      <footer class="inner">
+        <p>Published with <a href="http://pages.github.com">GitHub Pages</a></p>
+      </footer>
+    </div>
+
+    
+
+  </body>
+</html>
